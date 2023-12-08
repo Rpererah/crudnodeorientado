@@ -27,20 +27,21 @@ class UserController{
             res.status(500).json({error:'server error'});
         }
     }
-    async createUser(req,res){
+    async createUser(req, res) {
         try {
-            const formData=req.body;
-            const newUser=new UserController({...formData});
-            await connection.query('INSERT INTO users (name,email) VALUES (?,?)',[
+            const formData = req.body;
+            const newUser = new UserModel({...formData});
+            await connection.query('INSERT INTO users (name, email) VALUES (?, ?)', [
                 formData.name,
                 formData.email
             ]);
-            res.status(201).json({success:true,message:'User created success'});
+            res.status(201).json({ success: true, message: 'User created successfully' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({error:'server error'});
+            res.status(500).json({ error: 'server error' });
         }
     }
+    
     async updateUser(req,res){
         try {
             const userId= req.params.id;
@@ -59,14 +60,10 @@ class UserController{
     async deleteUser(req,res){
         try {
             const userId= req.params.id;
-            const [result]=connection.query('DELETE FROM users WHERE id=?',[
+            const result=connection.query('DELETE FROM users WHERE id=?',[
                 userId
             ]);
-            if(result.affectedRows>0){
-                res.json({success:true});
-            }else{
-                res.status(404).json({error:'User not found'});
-            }
+            res.json({success:true})
             
         } catch (error) {
             console.error(error);
@@ -76,4 +73,4 @@ class UserController{
 
 }
 
-module.exports = UserController;
+module.exports = new UserController();
